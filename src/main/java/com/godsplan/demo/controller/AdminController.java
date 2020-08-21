@@ -36,8 +36,8 @@ public class AdminController {
     @Autowired
     AuthenticationManager authenticationManager;
 
-    @DeleteMapping(value="/client/{email}")
-    public void removeClientResaponse(@PathVariable("email")String email){
+    @DeleteMapping(value="/client")
+    public void removeClientResaponse(@RequestParam("email")String email){
 log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
         clientService.deleteClient(email);
     }

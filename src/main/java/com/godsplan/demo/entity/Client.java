@@ -46,5 +46,7 @@ public class Client {
  String  category;
 
 
+   String code;
+
 
 }
