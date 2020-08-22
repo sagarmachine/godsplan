@@ -3,6 +3,7 @@ package com.godsplan.demo.service;
 import com.godsplan.demo.entity.Admin;
 import com.godsplan.demo.repo.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,4 +42,5 @@ public class AdminServiceImpl implements IAdminService{
         adminRepository.save(admin);
 
     }
+
 }

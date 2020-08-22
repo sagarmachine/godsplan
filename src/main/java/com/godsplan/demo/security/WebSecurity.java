@@ -24,6 +24,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     AdminNotLoginAuthenticationEntryPoint adminNotLoginAuthenticationEntryPoint;
 
     @Autowired
+    AuthenticationFilter authenticationFilter;
+
+    @Autowired
     IAdminService adminService;
 
     @Override
@@ -31,15 +34,15 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 // .anyRequest().permitAll();
-                 .antMatchers("/**/*")
-               // .antMatchers("/api/v1/client/verify","/api/v1/client","/api/v1/admin/authenticate","/api/v1/admin")
+                // .antMatchers("/**/*")
+                .antMatchers("/api/v1/client/verify","/api/v1/client/country/count","/api/v1/client","/api/v1/admin/authenticate")
                 .permitAll()
                 .anyRequest().authenticated();
                 //http.formLogin().loginProcessingUrl("/api/v1/admin/authenticate");
             http.exceptionHandling().authenticationEntryPoint(adminNotLoginAuthenticationEntryPoint)
-                .and().csrf().disable();
-         //      .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            //   .and().addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .and().csrf().disable()
+               .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+              .and().addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //                .oauth2Login().successHandler(oAuth2SuccessHandler).failureHandler(oAuth2FailureHandler);//.defaultSuccessUrl("/api/v1/client/oauthAuthorization");
         http.cors();
 
