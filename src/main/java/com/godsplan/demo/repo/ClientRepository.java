@@ -16,4 +16,7 @@ public interface ClientRepository  extends JpaRepository<Client,Long> {
     //@Query(  value = "select COUNT(email),country from client group by country")
     @Query(nativeQuery = true, value = "select COUNT(email),country,category,code from client where category='no' group by country  UNION select COUNT(email),country,category,code from client where category='yes' group by country  UNION select COUNT(email),country,category,code from client where category='undecided' group by country"  )
     List<Object> getCountryCount();
+
+    //List<Client> find
+
 }

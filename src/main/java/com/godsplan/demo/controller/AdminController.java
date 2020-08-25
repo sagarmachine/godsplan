@@ -75,7 +75,7 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
     @GetMapping(value = "/data")
     public ResponseEntity<?> getData(){
 
-        return new ResponseEntity<>(clientRepository.findAll(Sort.by("country").ascending().and(Sort.by("createdOn").descending())), HttpStatus.OK);
+        return new ResponseEntity<>(clientRepository.findAll(Sort.by("createdOn").descending()), HttpStatus.OK);
     }
 
 
