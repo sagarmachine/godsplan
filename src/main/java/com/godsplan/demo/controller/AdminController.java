@@ -8,6 +8,7 @@ import com.godsplan.demo.service.IAdminService;
 import com.godsplan.demo.service.IClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +75,7 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
     @GetMapping(value = "/data")
     public ResponseEntity<?> getData(){
 
-        return new ResponseEntity<>(clientRepository.findAllByOrderByCountry(), HttpStatus.OK);
+        return new ResponseEntity<>(clientRepository.findAll(Sort.by("country").ascending().and(Sort.by("createdOn").descending())), HttpStatus.OK);
     }
 
 
