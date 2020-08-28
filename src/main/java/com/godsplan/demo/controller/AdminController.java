@@ -8,6 +8,8 @@ import com.godsplan.demo.service.IAdminService;
 import com.godsplan.demo.service.IClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,11 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -42,6 +44,8 @@ public class AdminController {
 
     @Autowired
     JWTUtil jwtUtil;
+
+    int pageSize=5;
 
     @DeleteMapping(value="/client")
     public void removeClientResaponse(@RequestParam("email")String email){
@@ -72,10 +76,38 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
          return  new ResponseEntity<>("INVALID CREDENTIALS",HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @GetMapping(value = "/data")
-    public ResponseEntity<?> getData(){
+    @GetMapping(value = "/data/{category}/{page}")
+    public ResponseEntity<?> getData(@PathVariable("page") int page,@PathVariable("category") String category){
+        Pageable pageable= PageRequest.of(page, pageSize, Sort.by("createdOn").descending());
+        HashMap<String,Object>hashMap= new HashMap<>();
+      if(category.equals("all"))
+        return new ResponseEntity<>(clientRepository.findAll(pageable), HttpStatus.OK);
+      else {
+          hashMap.put("content",clientRepository.findByCategory(category, pageable));
+          hashMap.put("totalPages",(int)Math.ceil(clientRepository.countByCategory(category)/(double)pageSize));
+          return new ResponseEntity<>(hashMap, HttpStatus.OK);
+      }
+    }
 
-        return new ResponseEntity<>(clientRepository.findAll(Sort.by("createdOn").descending()), HttpStatus.OK);
+    @GetMapping(value = "/data/country/{country}/{category}/{page}")
+    public ResponseEntity<?> getDataByCountry(@PathVariable("page") int page,@PathVariable("category") String category,@PathVariable("country") String country){
+        Pageable pageable= PageRequest.of(page, pageSize, Sort.by("createdOn").descending());
+        HashMap<String,Object>hashMap= new HashMap<>();
+        if(category.equals("all")) {
+            hashMap.put("content",clientRepository.findByCountryOrderByCreatedOn(country, pageable));
+            hashMap.put("totalPages",(int)Math.ceil(clientRepository.countByCountry(country)/(double)pageSize));
+            return new ResponseEntity<>(hashMap, HttpStatus.OK);
+        }
+        else {
+            hashMap.put("content",clientRepository.findByCountryAndCategoryOrderByCreatedOn(country, category, pageable));
+            hashMap.put("totalPages",(int)Math.ceil(clientRepository.countByCountryAndCategory(country,category)/(double)pageSize));
+            return new ResponseEntity<>(hashMap, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/country")
+    public ResponseEntity<?> getCountries(){
+        return new ResponseEntity<>(clientRepository.getAllCountries(),HttpStatus.OK);
     }
 
 
