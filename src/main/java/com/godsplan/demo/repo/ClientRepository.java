@@ -202,12 +202,15 @@ public interface ClientRepository  extends JpaRepository<Client,Long> {
     Integer countByCountryAndVerifiedIsFalseAndPublicFigureAndCategoryAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(String country,String publicFigure,String category,String firstName,String lastName,String email);
 
 
+    @Query(value="from Client where  (NOT publicFigure=:other) AND (firstName like %:search% OR lastName like %:search% OR email like %:search%)")
+    List<Client> findByPublicFigureIsNotOrderByCreatedOnDesc(String other,String search,Pageable pageable);
+    @Query(value="select  count(email) from Client where  (NOT publicFigure=:other) AND (firstName like %:search% OR lastName like %:search% OR email like %:search%)")
+    Integer countByPublicFigureIsNotOrderByCreatedOnDesc(String other,String search);
 
-    List<Client> findByPublicFigureIsNotOrderByCreatedOnDesc(String other,Pageable pageable);
-    Integer countByPublicFigureIsNotOrderByCreatedOnDesc(String other);
-
-    List<Client> findByPublicFigureIsNotAndCountryOrderByCreatedOnDesc(String other,String country,Pageable pageable);
-    Integer countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc(String other,String country);
+    @Query(value="from Client where country=:country AND (NOT publicFigure=:other) AND (firstName like %:search% OR lastName like %:search% OR email like %:search%)")
+    List<Client> findByPublicFigureIsNotAndCountryOrderByCreatedOnDesc(String other,String country,String search,Pageable pageable);
+    @Query(value="select count(email) from Client where country=:country AND (NOT publicFigure=:other) AND (firstName like %:search% OR lastName like %:search% OR email like %:search%)")
+    Integer countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc(String other,String country,String search);
 
 
 

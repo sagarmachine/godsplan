@@ -42,16 +42,19 @@ public class ClientController {
         return new ResponseEntity(clientRepository.getCountryCount(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/publicFigure/{country}/{page}")
-    public ResponseEntity<?> getList(@PathVariable("page")int page, @PathVariable("country")String country){
+    @GetMapping(value = "/publicFigure/{country}/{search}/{page}")
+    public ResponseEntity<?> getList(@PathVariable("page")int page, @PathVariable("country")String country, @PathVariable("search")String search){
         Pageable pageable =PageRequest.of(page, 5);
         HashMap<String,Object> hashMap= new HashMap<>();
+        if(search.equals("all"))
+             search="";
+
         if(country.equals("all")) {
-            hashMap.put("content", clientRepository.findByPublicFigureIsNotOrderByCreatedOnDesc("OTHER", pageable));
-            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotOrderByCreatedOnDesc("OTHER") / (double) 5));
+            hashMap.put("content", clientRepository.findByPublicFigureIsNotOrderByCreatedOnDesc("OTHER",search, pageable));
+            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotOrderByCreatedOnDesc("OTHER",search) / (double) 5));
         }else{
-            hashMap.put("content", clientRepository.findByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country, pageable));
-            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country) / (double) 5));
+            hashMap.put("content", clientRepository.findByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country,search, pageable));
+            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country,search) / (double) 5));
         }
 
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
