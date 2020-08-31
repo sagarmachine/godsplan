@@ -203,6 +203,12 @@ public interface ClientRepository  extends JpaRepository<Client,Long> {
 
 
 
+    List<Client> findByPublicFigureIsNotOrderByCreatedOnDesc(String other,Pageable pageable);
+    Integer countByPublicFigureIsNotOrderByCreatedOnDesc(String other);
+
+    List<Client> findByPublicFigureIsNotAndCountryOrderByCreatedOnDesc(String other,String country,Pageable pageable);
+    Integer countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc(String other,String country);
+
 
 
 }

@@ -55,6 +55,8 @@ public class Client {
    String code;
 
 
+   String background;
+
     public boolean getVerified() {
         return verified;
     }

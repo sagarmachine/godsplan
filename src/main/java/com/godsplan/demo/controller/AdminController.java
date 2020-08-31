@@ -262,6 +262,14 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
     }
 
 
+    @PostMapping("/client/background")
+    public void updateClientBackground(@RequestParam("email")String email , @RequestParam("background")String background){
+        Client client= clientRepository.findByEmail(email).get();
+        client.setBackground(background);
+        clientRepository.save(client);
+
+    }
+
 
 
 
