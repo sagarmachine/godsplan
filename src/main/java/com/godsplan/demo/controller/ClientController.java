@@ -5,9 +5,13 @@ import com.godsplan.demo.entity.Client;
 import com.godsplan.demo.repo.ClientRepository;
 import com.godsplan.demo.service.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/v1/client")
@@ -35,6 +39,15 @@ public class ClientController {
     public ResponseEntity<?> getCountryCount(){
 
         return new ResponseEntity(clientRepository.getCountryCount(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/publicFigure/{page}")
+    public ResponseEntity<?> getList(@PathVariable("page")int page){
+        Pageable pageable =PageRequest.of(page, 5);
+        HashMap<String,Object> hashMap= new HashMap<>();
+        hashMap.put("content", clientRepository.findByVerifiedIsTrueAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc("OTHER","","","",pageable));
+        hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByVerifiedIsTrueAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc("OTHER","","","") / (double) 5));
+        return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 
 

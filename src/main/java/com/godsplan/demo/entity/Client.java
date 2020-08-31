@@ -45,8 +45,17 @@ public class Client {
  @Column(nullable = false)
  String  category;
 
+ @Column(nullable = false)
+ String publicFigure;
+
+ @Column(nullable = false)
+  boolean verified=false;
+
 
    String code;
 
 
+    public boolean getVerified() {
+        return verified;
+    }
 }

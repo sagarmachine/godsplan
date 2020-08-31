@@ -40,6 +40,8 @@ public class ClientServiceImpl implements IClientService {
            client.setCreatedOn(new Date());
        }
 
+       client.setPublicFigure(client.getPublicFigure().toUpperCase());
+
         clientRepository.save(client);
 
     }
