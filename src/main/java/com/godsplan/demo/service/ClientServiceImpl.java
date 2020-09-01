@@ -34,6 +34,7 @@ public class ClientServiceImpl implements IClientService {
     public  void addClient(Client client){
 
        Optional<Client> client1=clientRepository.findByEmail(client.getEmail());
+       client.setName(client.getFirstName()+" "+client.getLastName());
        if(client1.isPresent()) {
            log.info("exist");
            client.setId(client1.get().getId());

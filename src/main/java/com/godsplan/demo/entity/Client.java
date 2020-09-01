@@ -25,6 +25,8 @@ public class Client {
     @Column(nullable = false,unique = false)
     String email;
 
+    String name;
+
     @Column(nullable = false)
      String firstName;
 
@@ -53,6 +55,10 @@ public class Client {
 
 
    String code;
+
+   boolean claimed=false;
+
+   Date claimedOn;
 
 
    String background;

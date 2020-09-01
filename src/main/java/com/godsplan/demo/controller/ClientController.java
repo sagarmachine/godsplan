@@ -7,11 +7,14 @@ import com.godsplan.demo.service.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/client")
@@ -44,7 +47,7 @@ public class ClientController {
 
     @GetMapping(value = "/publicFigure/{country}/{search}/{page}")
     public ResponseEntity<?> getList(@PathVariable("page")int page, @PathVariable("country")String country, @PathVariable("search")String search){
-        Pageable pageable =PageRequest.of(page, 5);
+        Pageable pageable= PageRequest.of(page,5 , Sort.by("createdOn").descending());
         HashMap<String,Object> hashMap= new HashMap<>();
         if(search.equals("all"))
              search="";
@@ -65,6 +68,22 @@ public class ClientController {
     public ResponseEntity<?> getCountries(){
         return new ResponseEntity<>(clientRepository.getAllCountries(),HttpStatus.OK);
     }
+
+
+    @GetMapping("/claim")
+     public  void claim(@RequestParam("email")String email)
+    {
+        Optional<Client> clientOptional= clientRepository.findByEmail(email);
+        if(!clientOptional.isPresent() || clientOptional.get().getVerified())
+            return;
+
+        Client client=clientOptional.get();
+        client.setClaimed(true);
+        client.setClaimedOn(new Date());
+        clientRepository.save(client);
+
+    }
+
 
 
 }

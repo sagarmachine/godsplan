@@ -253,6 +253,7 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
     public void verifyClient(@RequestParam("email")String email){
              Client client= clientRepository.findByEmail(email).get();
              client.setVerified(!client.getVerified());
+             client.setClaimed(false);
              clientRepository.save(client);
     }
 
@@ -270,7 +271,33 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
 
     }
 
+    @PostMapping("/claim/decline")
+    public  void  claimDecline(@RequestParam("email")String email)
+    {
+        Client client= clientRepository.findByEmail(email).get();
+        client.setClaimed(false);
+        //client.setClaimedOn(new Date());
+        clientRepository.save(client);
 
+    }
+
+
+    @GetMapping("/claim/{search}/{page}")
+    public ResponseEntity<?> getClaims(@PathVariable("page")int page,@PathVariable("search")String search){
+
+        search=search.trim();
+        Pageable pageable= PageRequest.of(page,pageSize , Sort.by("createdOn").descending());
+
+        if(search.equals("all"))
+            search="";
+
+        HashMap<String,Object> hashMap= new HashMap<>();
+        hashMap.put("content",clientRepository.findByClaimedIsTrueOrderByClaimedOnDesc(search,pageable));
+        hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByClaimedIsTrueOrderByClaimedOnDesc(search)/(double)pageSize));
+
+
+        return new ResponseEntity<>(hashMap,HttpStatus.OK);
+    }
 
 
 
