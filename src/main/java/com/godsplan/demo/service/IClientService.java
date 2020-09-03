@@ -7,4 +7,5 @@ public interface IClientService {
 
     public void deleteClient(String email);
     public void verifyClient(String to,String url);
+    public void verifyClaim(String to,String url);
 }

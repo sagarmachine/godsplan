@@ -4,6 +4,7 @@ package com.godsplan.demo.controller;
 import com.godsplan.demo.entity.Client;
 import com.godsplan.demo.repo.ClientRepository;
 import com.godsplan.demo.service.IClientService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,11 +12,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.BASE64Decoder;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/client")
 public class ClientController {
@@ -30,7 +35,6 @@ public class ClientController {
     public void addClientResponse(@RequestBody Client client){
 
         clientService.addClient(client);
-
 
     }
 
@@ -47,17 +51,17 @@ public class ClientController {
 
     @GetMapping(value = "/publicFigure/{country}/{search}/{page}")
     public ResponseEntity<?> getList(@PathVariable("page")int page, @PathVariable("country")String country, @PathVariable("search")String search){
-        Pageable pageable= PageRequest.of(page,5 , Sort.by("createdOn").descending());
+        Pageable pageable= PageRequest.of(page,16 , Sort.by("createdOn").descending());
         HashMap<String,Object> hashMap= new HashMap<>();
         if(search.equals("all"))
              search="";
 
         if(country.equals("all")) {
             hashMap.put("content", clientRepository.findByPublicFigureIsNotOrderByCreatedOnDesc("OTHER",search, pageable));
-            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotOrderByCreatedOnDesc("OTHER",search) / (double) 5));
+            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotOrderByCreatedOnDesc("OTHER",search) / (double) 16));
         }else{
             hashMap.put("content", clientRepository.findByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country,search, pageable));
-            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country,search) / (double) 5));
+            hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByPublicFigureIsNotAndCountryOrderByCreatedOnDesc("OTHER",country,search) / (double) 16));
         }
 
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
@@ -70,17 +74,30 @@ public class ClientController {
     }
 
 
-    @GetMapping("/claim")
-     public  void claim(@RequestParam("email")String email)
+    @PostMapping("/claim")
+     public  ResponseEntity<?> claim(@RequestParam("email")String email,@RequestParam("usedEmail")String usedEmail,@RequestParam("phone") String phone)
     {
+
+        log.info(email+" "+usedEmail+" "+phone);
+
         Optional<Client> clientOptional= clientRepository.findByEmail(email);
         if(!clientOptional.isPresent() || clientOptional.get().getVerified())
-            return;
+            return new ResponseEntity<>(HttpStatus.ACCEPTED) ;
+
 
         Client client=clientOptional.get();
         client.setClaimed(true);
+        client.setEmail(usedEmail);
         client.setClaimedOn(new Date());
+        client.setPhone(phone);
         clientRepository.save(client);
+   return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+
+    @PostMapping("/claim/verification")
+    public void claimVerification(@RequestParam("url")String url,@RequestParam("to")String to){
+        clientService.verifyClaim(to,url);
 
     }
 

@@ -46,7 +46,7 @@ public class AdminController {
     @Autowired
     JWTUtil jwtUtil;
 
-    int pageSize=5;
+    int pageSize=15;
 
     @DeleteMapping(value="/client")
     public void removeClientResponse(@RequestParam("email")String email){
@@ -167,9 +167,8 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
     public ResponseEntity<?> getDataByCountry(@PathVariable("page") int page,@PathVariable("category") String category,@PathVariable("country") String country,
                                               @PathVariable("publicFigure") String publicFigure,@PathVariable("verified") String verified,
                                               @PathVariable("search") String search){
-        log.info(country+" "+category+" "+publicFigure+" "+verified+" "+page);
+        log.info(country+" "+category+" "+publicFigure+" "+verified+" "+page+" "+search);
         search=search.equals("all")?"":search;
-
         publicFigure=publicFigure.toUpperCase();
         Pageable pageable= PageRequest.of(page, pageSize, Sort.by("createdOn").descending());
         HashMap<String,Object>hashMap= new HashMap<>();
@@ -181,11 +180,13 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
                     return new ResponseEntity<>(hashMap, HttpStatus.OK);
                 } else {
                     if(verified.equals("true")) {
+
                         hashMap.put("content", clientRepository.findByCountryAndVerifiedIsTrueAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(country,"OTHER",search,search,search, pageable));
                         hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByCountryAndVerifiedIsTrueAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(country,"OTHER",search,search,search) / (double) pageSize));
                         return new ResponseEntity<>(hashMap, HttpStatus.OK);
                     }
                     else{
+                        log.info(country);
                         hashMap.put("content", clientRepository.findByCountryAndVerifiedIsFalseAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(country,"OTHER",search,search,search, pageable));
                         hashMap.put("totalPages", (int) Math.ceil(clientRepository.countByCountryAndVerifiedIsFalseAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(country,"OTHER",search,search,search) / (double) pageSize));
                         return new ResponseEntity<>(hashMap, HttpStatus.OK);
@@ -193,6 +194,7 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
                 }
             } else {
                 if (verified.equals("all")) {
+
                     hashMap.put("content",clientRepository.findByCountryAndPublicFigureAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(country,publicFigure,search,search,search,pageable));
                     hashMap.put("totalPages",(int)Math.ceil(clientRepository.countByCountryAndPublicFigureAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(country,publicFigure,search,search,search)/(double)pageSize));
                     return new ResponseEntity<>(hashMap, HttpStatus.OK);
@@ -257,6 +259,8 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
              clientRepository.save(client);
     }
 
+
+
     @GetMapping("/country")
     public ResponseEntity<?> getCountries(){
         return new ResponseEntity<>(clientRepository.getAllCountries(),HttpStatus.OK);
@@ -297,6 +301,15 @@ log.info(SecurityContextHolder.getContext().getAuthentication().getName()+"");
 
 
         return new ResponseEntity<>(hashMap,HttpStatus.OK);
+    }
+
+
+
+    @PostMapping("/client")
+    public void addClient(@RequestBody Client client){
+
+        clientService.addClient(client);
+
     }
 
 

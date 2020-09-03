@@ -137,9 +137,9 @@ public interface ClientRepository  extends JpaRepository<Client,Long> {
 
     //all not verified not others
 
-    //@Query(value="from Client where country=:country AND verified=false AND (NOT publicFigure=:other) AND (firstName like %:firstName% OR lastName like %:lastName% OR email like %:email% OR name like %:email%)")
+    @Query(value="from Client where country=:country AND verified=false AND (NOT publicFigure=:other) AND (firstName like %:firstName% OR lastName like %:lastName% OR email like %:email% OR name like %:email%)")
     List<Client>findByCountryAndVerifiedIsFalseAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(String country,String other,String firstName,String lastName,String email,Pageable pageable);
-    //@Query(value="select  count(email) from Client where country=:country AND verified=false AND (NOT publicFigure=:other) AND (firstName like %:firstName% OR lastName like %:lastName% OR email like %:email% OR name like %:email%)")
+    @Query(value="select  count(email) from Client where country=:country AND verified=false AND (NOT publicFigure=:other) AND (firstName like %:firstName% OR lastName like %:lastName% OR email like %:email% OR name like %:email%)")
     Integer countByCountryAndVerifiedIsFalseAndPublicFigureIsNotAndFirstNameContainingOrLastNameContainingOrEmailContainingOrderByCreatedOnDesc(String country,String other,String firstName,String lastName,String email);
 
 

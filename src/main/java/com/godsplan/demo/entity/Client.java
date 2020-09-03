@@ -22,7 +22,7 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
-    @Column(nullable = false,unique = false)
+    @Column(nullable = false)
     String email;
 
     String name;
@@ -53,12 +53,15 @@ public class Client {
  @Column(nullable = false)
   boolean verified=false;
 
+ String phone;
+
 
    String code;
 
    boolean claimed=false;
 
-   Date claimedOn;
+    @JsonFormat(pattern = "MM-dd-yyyy")
+    Date claimedOn;
 
 
    String background;

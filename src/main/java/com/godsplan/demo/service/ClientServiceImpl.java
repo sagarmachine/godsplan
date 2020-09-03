@@ -3,7 +3,6 @@ package com.godsplan.demo.service;
 import com.godsplan.demo.entity.Client;
 import com.godsplan.demo.repo.ClientRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -63,6 +62,11 @@ public class ClientServiceImpl implements IClientService {
         sendSimpleMessage(to,url);
     }
 
+    @Override
+    public void verifyClaim(String to,String url) {
+        sendClaimVerificationMail(to,url);
+    }
+
 
     public void sendSimpleMessage(String to,String url) {
         log.info("mail "+to);
@@ -87,5 +91,31 @@ public class ClientServiceImpl implements IClientService {
             e.printStackTrace();
         }
     }
+
+
+    public void sendClaimVerificationMail(String to,String url){
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = null;
+        try {
+            helper = new MimeMessageHelper(message,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
+
+            String inlineImage = "<div>Verify Your Account By clicking below link : <br>"+url+"</div>";
+            helper.setText(inlineImage, true);
+            helper.setSubject("gods plan verification");
+            helper.setTo(to);
+            helper.setFrom(adminEmail);
+            emailSender.send(message);
+            helper.setTo(to);
+            emailSender.send(message);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 }
