@@ -85,7 +85,7 @@ public class ClientServiceImpl implements IClientService {
                     "<br/>\n" +
                     "<hr/>\n" +
                     "<br/>\n" +
-                    "<strong>Your Confirmation Email To"+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Nor Acknowledge neither Deny")+" God </strong>\n" +
+                    "<strong>Your Confirmation Email To "+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Nor Acknowledge neither Deny")+" God </strong>\n" +
                     "<br/>\n" +
                     "<hr/>\n" +
                     "<br/>\n" +
@@ -137,7 +137,7 @@ public class ClientServiceImpl implements IClientService {
                     "<br/>\n" +
                     "<br/>\n" +
                     "<strong>"+client.getFirstName()+" "+client.getLastName()+"</strong> a " +
-                    "<strong>"+(client.getPublicFigure().equalsIgnoreCase("PF1")?"Scientist":"Public Figure")+"</strong><br/><br/>" +
+                    "<strong>"+(client.getPublicFigure().equalsIgnoreCase("PF1")?"Scientist":"Public Figure ")+"</strong><br/><br/>" +
                     "<br/>\n" +
                     "<p>However, in order to initiate your claim you must verify your email within 24 hours.</p>\n" +
                     "<br/>\n" +
