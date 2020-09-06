@@ -57,19 +57,22 @@ public class ClientServiceImpl implements IClientService {
     }
 
 
-    public void verifyClient(String to,String url){
+    public void verifyClient(String name, String category,String to,String url){
 
-        sendSimpleMessage(to,url);
+        sendSimpleMessage(name,category,to,url);
     }
 
     @Override
-    public void verifyClaim(String to,String url) {
-        sendClaimVerificationMail(to,url);
+    public void verifyClaim(String email,String to,String url) {
+
+        Optional<Client> clientOptional= clientRepository.findByEmail(email);
+
+        sendClaimVerificationMail(clientOptional.get(),to,url);
     }
 
 
-    public void sendSimpleMessage(String to,String url) {
-        log.info("mail "+to);
+    public void sendSimpleMessage(String name, String category,String to,String url) {
+        //log.info("mail "+to);
 
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = null;
@@ -78,7 +81,28 @@ public class ClientServiceImpl implements IClientService {
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
 
-            String inlineImage = "<div>Verify Your Account By clicking below link : <br>"+url+"</div>";
+            String inlineImage = "<h3>Recipient</h3>\n" +
+                    "<br/>\n" +
+                    "<hr/>\n" +
+                    "<br/>\n" +
+                    "<strong>Your Confirmation Email To"+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Nor Acknowledge neither Deny")+" God </strong>\n" +
+                    "<br/>\n" +
+                    "<hr/>\n" +
+                    "<br/>\n" +
+                    ""+name+"\n" +
+                    "<br/>\n" +
+                    "<br/>\n" +
+                    "<p>you have indicated that you want to join the people who <strong>"+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Nor Acknowledge neither Deny")+"</strong> God</p>\n" +
+                    "<br/>\n" +
+                    "<p>However, in order to complete your registration you must verify your email within 24 hours.</p>\n" +
+                    "<br/>\n" +
+                    "\n" +
+                    "<a href='"+url+"'>Confirm Your Email</a>\n" +
+                    "<br/>\n" +
+                    "<br/>\n" +
+                    "<p>or copy and paste the following url into your browser</p><br/>\n"+
+                    url;
+
             helper.setText(inlineImage, true);
             helper.setSubject("gods plan verification");
             helper.setTo(to);
@@ -93,7 +117,7 @@ public class ClientServiceImpl implements IClientService {
     }
 
 
-    public void sendClaimVerificationMail(String to,String url){
+    public void sendClaimVerificationMail(Client client,String to,String url){
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = null;
         try {
@@ -101,7 +125,28 @@ public class ClientServiceImpl implements IClientService {
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name());
 
-            String inlineImage = "<div>Verify Your Account By clicking below link : <br>"+url+"</div>";
+            String inlineImage = "<h3>Recipient</h3>\n" +
+                    "<br/>\n" +
+                    "<hr/>\n" +
+                    "<br/>\n" +
+                    "<strong>Your Claim Confirmation Email</strong>"+
+                    "<br/>\n" +
+                    "<hr/>\n" +
+                    "<br/>\n" +
+                    "By Clicking the below link you will be processed and reach out by our team for confirmation that weather or not you are :" +
+                    "<br/>\n" +
+                    "<br/>\n" +
+                    "<strong>"+client.getFirstName()+" "+client.getLastName()+"</strong> a " +
+                    "<strong>"+(client.getPublicFigure().equalsIgnoreCase("PF1")?"Scientist":"Public Figure")+"</strong><br/><br/>" +
+                    "<br/>\n" +
+                    "<p>However, in order to initiate your claim you must verify your email within 24 hours.</p>\n" +
+                    "<br/>\n" +
+                    "\n" +
+                    "<a href='"+url+"'>Confirm Your Email</a>\n" +
+                    "<br/>\n" +
+                    "<br/>\n" +
+                    "<p>or copy and paste the following url into your browser</p><br/>\n"+
+                    url;
             helper.setText(inlineImage, true);
             helper.setSubject("gods plan verification");
             helper.setTo(to);

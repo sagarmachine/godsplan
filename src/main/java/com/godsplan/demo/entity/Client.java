@@ -56,6 +56,8 @@ public class Client {
  String phone;
 
 
+ boolean knowMore=false;
+
    String code;
 
    boolean claimed=false;
