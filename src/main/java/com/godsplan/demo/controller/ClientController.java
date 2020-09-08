@@ -32,7 +32,7 @@ public class ClientController {
     ClientRepository clientRepository;
 
 
-    int pageSize=15;
+    int pageSize=24;
 
 
     @PostMapping(value="")
@@ -55,7 +55,7 @@ public class ClientController {
 
     @GetMapping(value = "/publicFigure/{country}/{search}/{page}")
     public ResponseEntity<?> getList(@PathVariable("page")int page, @PathVariable("country")String country, @PathVariable("search")String search){
-        Pageable pageable= PageRequest.of(page,16 , Sort.by("createdOn").descending());
+        Pageable pageable= PageRequest.of(page,24 , Sort.by("createdOn").descending());
         HashMap<String,Object> hashMap= new HashMap<>();
         if(search.equals("all"))
              search="";

@@ -85,14 +85,14 @@ public class ClientServiceImpl implements IClientService {
                     "<br/>\n" +
                     "<hr/>\n" +
                     "<br/>\n" +
-                    "<strong>Your Confirmation Email To "+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Nor Acknowledge neither Deny")+" God </strong>\n" +
+                    "<strong>Your Confirmation Email To "+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Neither Acknowledge nor  Deny")+" God </strong>\n" +
                     "<br/>\n" +
                     "<hr/>\n" +
                     "<br/>\n" +
                     ""+name+"\n" +
                     "<br/>\n" +
                     "<br/>\n" +
-                    "<p>you have indicated that you want to join the people who <strong>"+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Nor Acknowledge neither Deny")+"</strong> God</p>\n" +
+                    "<p>you have indicated that you want to join the people who <strong>"+ (category.equals("yes")?"Acknowledge":category.equals("no")?"Deny":"Neither Acknowledge nor Deny")+"</strong> God</p>\n" +
                     "<br/>\n" +
                     "<p>However, in order to complete your registration you must verify your email within 24 hours.</p>\n" +
                     "<br/>\n" +

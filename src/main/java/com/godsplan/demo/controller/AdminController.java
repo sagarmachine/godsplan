@@ -46,7 +46,7 @@ public class AdminController {
     @Autowired
     JWTUtil jwtUtil;
 
-    int pageSize=15;
+    int pageSize=100;
 
     @DeleteMapping(value="/client")
     public void removeClientResponse(@RequestParam("email")String email){
